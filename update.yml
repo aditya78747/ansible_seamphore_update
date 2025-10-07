@@ -1,15 +1,33 @@
 ---
-- name: Update Ubuntu 24.04 system
-  hosts: all
+- name: Update and upgrade packages on Ubuntu 24.04, SUSE 15, and RHEL 10
+  hosts: ATT_UBUNTU
   become: yes
-
   tasks:
-    - name: Update APT package index
-      ansible.builtin.apt:
-        update_cache: yes
 
-    - name: Upgrade all installed packages
-      ansible.builtin.apt:
+    - name: Update & upgrade packages on Debian/Ubuntu [ATT_UBUNTU]
+      apt:
+        update_cache: yes
         upgrade: dist
-        autoremove: yes
-        autoclean: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Update all packages on RedHat/CentOS/RHEL [INDIA_REDHAT]
+      yum:
+        name: '*'
+        state: latest
+      when: ansible_os_family == "RedHat"
+
+    - name: Update all packages on SUSE [INDIA_SUSE]
+      zypper:
+        name: '*'
+        state: latest
+      when: ansible_os_family == "Suse"
+
+    - name: Gather system facts
+      setup:
+
+    - name: Show OS and Kernel version after updates
+      debug:
+        msg: |
+          {{ inventory_hostname }}:
+            OS: {{ ansible_distribution }} {{ ansible_distribution_version }}
+            Kernel: {{ ansible_kernel }}
