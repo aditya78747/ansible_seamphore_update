@@ -1,0 +1,25 @@
+#!/bin/bash
+# Ubuntu 24.04 update script
+# Description: Full system update and cleanup
+
+set -e
+
+echo "--------------------------------------------------"
+echo "🚀 Starting Ubuntu 24.04 update..."
+echo "--------------------------------------------------"
+
+sudo apt update -y
+sudo apt upgrade -y
+sudo apt dist-upgrade -y
+sudo apt autoremove -y
+sudo apt autoclean -y
+
+if [ -f /var/run/reboot-required ]; then
+  echo "⚠️  Reboot required after update."
+else
+  echo "✅ No reboot required."
+fi
+
+echo "--------------------------------------------------"
+echo "🎉 Update completed successfully!"
+echo "--------------------------------------------------"
